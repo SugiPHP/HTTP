@@ -18,5 +18,6 @@
             "SugiPHP\\HTTP\\": ""
         }
     },
-    "target-dir": "SugiPHP/HTTP"
+    "target-dir": "SugiPHP/HTTP",
+    "minimum-stability": "dev"
 }
