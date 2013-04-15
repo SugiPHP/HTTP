@@ -28,17 +28,17 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(80, $req->server["SERVER_PORT"]);
 		$this->assertEquals(80, $req->getPort());
 		// base()
-		$this->assertEquals("http://example.com", $req->base());
+		// $this->assertEquals("http://example.com", $req->base());
 		// PATH_INFO
 		$this->assertEquals("/path/to/file.php", $req->server["PATH_INFO"]);
 		// path()
-		$this->assertEquals("/path/to/file.php", $req->path());
+		$this->assertEquals("/path/to/file.php", $req->getPath());
 		// current()
-		$this->assertEquals("http://example.com/path/to/file.php", $req->current());
+		// $this->assertEquals("http://example.com/path/to/file.php", $req->current());
 		// QUERY_STRING
 		$this->assertEquals("arg1=one&arg2=two", $req->server["QUERY_STRING"]);
 		// queue() arguments
-		$this->assertEquals("arg1=one&arg2=two", $req->queue());
+		// $this->assertEquals("arg1=one&arg2=two", $req->queue());
 		// arguments as array
 		$this->assertInternalType("array", $req->query);
 		// arg1
@@ -48,15 +48,15 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		// REQUEST_URI
 		$this->assertEquals("/path/to/file.php?arg1=one&arg2=two", $req->server["REQUEST_URI"]);
 		// address()
-		$this->assertEquals("http://example.com/path/to/file.php?arg1=one&arg2=two", $req->address());
+		// $this->assertEquals("http://example.com/path/to/file.php?arg1=one&arg2=two", $req->address());
 		// ajax()
-		$this->assertSame(false, $req->ajax());
+		// $this->assertSame(false, $req->ajax());
 		// cli()
-		$this->assertSame(true, $req->cli());
+		// $this->assertSame(true, $req->cli());
 		// REMOTE_ADDR
-		$this->assertEquals("127.0.0.1", $req->server["REMOTE_ADDR"]);
+		// $this->assertEquals("127.0.0.1", $req->server["REMOTE_ADDR"]);
 		// ip()
-		$this->assertEquals("127.0.0.1", $req->ip());
+		// $this->assertEquals("127.0.0.1", $req->ip());
 	}
 
 	public function testSeters()
@@ -108,6 +108,20 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf("\SugiPHP\HTTP\Request", $req->setUserPass("user", "pass"));
 		$this->assertEquals("user", $req->getUser());
 		$this->assertEquals("pass", $req->getPassword());
+
+		// set path
+		$this->assertInstanceOf("\SugiPHP\HTTP\Request", $req->setPath("/new/path"));
+		$this->assertEquals("/new/path", $req->getPath());
+		// restore
+		$req->setPath("path/to/file.php");
+		$this->assertEquals("/path/to/file.php", $req->getPath());
+
+		// set host
+		$this->assertInstanceOf("\SugiPHP\HTTP\Request", $req->setHost("sub.foobar.info"));
+		$this->assertEquals("sub.foobar.info", $req->getHost());
+		// restore
+		$req->setHost("example.com");
+		$this->assertEquals("example.com", $req->getHost());
 	}
 
 	public function testHosts()
@@ -124,29 +138,29 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 	public function testCustomPaths()
 	{
 		$req = Request::custom("http://example.com/path");
-		$this->assertEquals("/path", $req->path());
+		$this->assertEquals("/path", $req->getPath());
 		$req = Request::custom("http://example.com/path/");
-		$this->assertEquals("/path", $req->path());
+		$this->assertEquals("/path", $req->getPath());
 		$req = Request::custom("/path");
-		$this->assertEquals("/path", $req->path());
+		$this->assertEquals("/path", $req->getPath());
 		$req = Request::custom("/path/");
-		$this->assertEquals("/path", $req->path());
+		$this->assertEquals("/path", $req->getPath());
 		$req = Request::custom("path");
-		$this->assertEquals("/path", $req->path());
+		$this->assertEquals("/path", $req->getPath());
 		$req = Request::custom("/path/to");
-		$this->assertEquals("/path/to", $req->path());
+		$this->assertEquals("/path/to", $req->getPath());
 		$req = Request::custom("/path/to/");
-		$this->assertEquals("/path/to", $req->path());
+		$this->assertEquals("/path/to", $req->getPath());
 		$req = Request::custom("path/to");
-		$this->assertEquals("/path/to", $req->path());
+		$this->assertEquals("/path/to", $req->getPath());
 	}
 
 	public function testCustomPathFileStyle()
 	{
 		$req = Request::custom("http://example.com/path/index.html");
-		$this->assertEquals("/path/index.html", $req->path());
+		$this->assertEquals("/path/index.html", $req->getPath());
 		$req = Request::custom("http://example.com/path/index.html/");
-		$this->assertEquals("/path/index.html", $req->path());
+		$this->assertEquals("/path/index.html", $req->getPath());
 	}
 
 	public function testCustomHttpsCreation()
@@ -159,7 +173,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		// https is on
 		$this->assertEquals("on", $req->server["HTTPS"]);
 		// base()
-		$this->assertEquals("https://example.com", $req->base());
+		// $this->assertEquals("https://example.com", $req->base());
 	}
 
 	public function testCustomPortUserPass()
@@ -176,7 +190,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		// REQUEST_URI
 		$this->assertEquals("/path/to/file.php?arg1=one&arg2=two", $req->server["REQUEST_URI"]);
 		// address()
-		$this->assertEquals("http://example.com/path/to/file.php?arg1=one&arg2=two", $req->address());
+		// $this->assertEquals("http://example.com/path/to/file.php?arg1=one&arg2=two", $req->address());
 		// HTTP_HOST
 		$this->assertEquals("example.com", $req->server["HTTP_HOST"]);
 		// host()
@@ -193,11 +207,11 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		// QUERY_STRING
 		$this->assertEquals("arg1=edno&arg2=two&foo=bar", $req->server["QUERY_STRING"]);
 		// queue() arguments
-		$this->assertEquals("arg1=edno&arg2=two&foo=bar", $req->queue());		
+		// $this->assertEquals("arg1=edno&arg2=two&foo=bar", $req->queue());		
 		// REQUEST_URI
 		$this->assertEquals("/path/to/file.php?arg1=edno&arg2=two&foo=bar", $req->server["REQUEST_URI"]);
 		// address()
-		$this->assertEquals("http://example.com/path/to/file.php?arg1=edno&arg2=two&foo=bar", $req->address());
+		// $this->assertEquals("http://example.com/path/to/file.php?arg1=edno&arg2=two&foo=bar", $req->address());
 	}
 
 	public function testPostParams()
@@ -210,7 +224,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		// QUERY_STRING
 		$this->assertEquals("arg1=one&arg2=two", $req->server["QUERY_STRING"]);
 		// queue() arguments
-		$this->assertEquals("arg1=one&arg2=two", $req->queue());
+		// $this->assertEquals("arg1=one&arg2=two", $req->queue());
 		// arguments as array
 		$this->assertInternalType("array", $req->post);
 		// GET arg1
@@ -233,7 +247,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		// QUERY_STRING
 		$this->assertEquals("arg1=one&arg2=two", $req->server["QUERY_STRING"]);
 		// queue() arguments
-		$this->assertEquals("arg1=one&arg2=two", $req->queue());
+		// $this->assertEquals("arg1=one&arg2=two", $req->queue());
 		// arguments as array
 		$this->assertInternalType("array", $req->post);
 		// GET arg1

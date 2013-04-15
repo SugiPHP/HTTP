@@ -269,7 +269,7 @@ class Request
 	}
 
 	/**
-	 * Returns the user.
+	 * Returns the basic authentication user name.
 	 * 
 	 * @return string|null - Returns NULL if no user was specified in the request
 	 */
@@ -279,7 +279,7 @@ class Request
 	}	
 
 	/**
-	 * Sets auth username.
+	 * Sets the basic authentication user name.
 	 * 
 	 * @param  string|null $user - set to NULL for no user
 	 * @return SugiPHP\HTTP\Request
@@ -292,7 +292,7 @@ class Request
 	}
 
 	/**
-	 * Returns the password.
+	 * Returns the basic authentication password.
 	 * 
 	 * @return string|null - Returns NULL if no password was specified in the request
 	 */
@@ -302,7 +302,7 @@ class Request
 	}
 
 	/**
-	 * Sets auth password.
+	 * Sets the basic authentication password.
 	 * 
 	 * @param  string|null $password - set to NULL for no password
 	 * @return SugiPHP\HTTP\Request
@@ -330,7 +330,40 @@ class Request
 	}
 
 	/**
-	 * Returns host name like "subdomain.example.com"
+	 * Returns the path extracted from the request. The path has no trailing slash and always have leading one.
+	 * Examples: 
+	 *  * /
+	 *  * /home
+	 *  * /index.php
+	 *  * /users/login
+	 *  * /users/login.php
+	 * 
+	 * @return string
+	 */
+	public function getPath()
+	{
+		return "/" . $this->uri();
+	}
+
+	/**
+	 * Sets request path.
+	 * 
+	 * @param  string $path
+	 * @return SugiPHP\HTTP\Request
+	 */
+	public function setPath($path)
+	{
+		// path ALWAYS begin with a slash and has no trailing slash
+		$path = "/" . trim($path, "/");
+		$this->server["PATH_INFO"] = $path;
+		$this->server["REQUEST_URI"] = $path;
+
+		return $this;
+	}
+
+	/**
+	 * Returns host name like "subdomain.example.com".
+	 * 
 	 * @return string
 	 */
 	public function getHost()
@@ -339,19 +372,97 @@ class Request
 	}
 
 	/**
+	 * Sets the host
+	 *
+	 * @param  string $host
+	 * @return SugiPHP\HTTP\Request
+	 */
+	public function setHost($host)
+	{
+		$this->server["HTTP_HOST"] = $host;
+
+		return $this;
+	}
+
+	/**
 	 * Returns request scheme://host
 	 * @return string
 	 */
-	public function base()
-	{
-		return $this->getScheme() . "://" .  $this->getHost();
-	}
+	// public function base()
+	// {
+	// 	return $this->getScheme() . "://" .  $this->getHost();
+	// }
+
+	/**
+	 * Returns request (protocol+host+uri)
+	 * @return string
+	 */
+	// public function current()
+	// {
+	// 	return $this->base() . $this->getPath();
+	// }
+
+	/**
+	 * The part of the url which is after the ?
+	 * @return string
+	 */
+	// public function queue()
+	// {
+	// 	return http_build_query($this->query, "", "&");
+	// }
+
+	/**
+	 * Returns request scheme://host/uri?queue
+	 * 
+	 * @return string
+	 * @todo: maybe shold place user/pass and port (if not default)
+	 */
+	// public function address()
+	// {
+	// 	if ($queue = $this->queue()) {
+	// 		$queue = "?" . $queue;
+	// 	}
+	// 	return $this->base().$this->getPath().$queue;
+	// }
+
+	/**
+	 * Is the request AJAX or not
+	 * @return boolean
+	 */
+	// public function ajax()
+	// {
+	// 	return (isset($this->server["HTTP_X_REQUESTED_WITH"]) AND (strtolower($this->server["HTTP_X_REQUESTED_WITH"]) === "xmlhttprequest"));
+	// }
+
+	/**
+	 * Request from CLI
+	 * TODO: this should be somehow changeable
+	 * 
+	 * @return boolean
+	 */
+	// public function cli()
+	// {
+	// 	return (PHP_SAPI === "cli");
+	// }
+
+	/**
+	 * Client's IP
+	 * @return string
+	 */
+	// public function ip()
+	// {
+	// 	if ($this->cli()) return "127.0.0.1"; // The request was started from the command line
+	// 	if (isset($this->server["HTTP_X_FORWARDED_FOR"])) return $this->server["HTTP_X_FORWARDED_FOR"]; // If the server is behind proxy
+	// 	if (isset($this->server["HTTP_CLIENT_IP"])) return $this->server["HTTP_CLIENT_IP"];
+	// 	if (isset($this->server["REMOTE_ADDR"])) return $this->server["REMOTE_ADDR"];
+	// 	return "0.0.0.0";
+	// }
 
 	/**
 	 * Get the URI for the current request.
 	 * @return string
 	 */
-	public function uri()
+	protected function uri()
 	{
 		// determine URI from Request
 		$uri = isset($this->server["REQUEST_URI"]) ? $this->server["REQUEST_URI"] : 
@@ -378,78 +489,5 @@ class Request
 		return $uri;
 	}
 
-	/**
-	 * Get PATH_INFO
-	 * @return string
-	 */
-	public function path()
-	{
-		return "/" . $this->uri();
-	}
-
-	/**
-	 * Returns request (protocol+host+uri)
-	 * @return string
-	 */
-	public function current()
-	{
-		return $this->base() . $this->path();
-	}
-
-	/**
-	 * The part of the url which is after the ?
-	 * @return string
-	 */
-	public function queue()
-	{
-		return http_build_query($this->query, "", "&");
-	}
-
-	/**
-	 * Returns request scheme://host/uri?queue
-	 * 
-	 * @return string
-	 * @todo: maybe shold place user/pass and port (if not default)
-	 */
-	public function address()
-	{
-		if ($queue = $this->queue()) {
-			$queue = "?" . $queue;
-		}
-		return $this->base().$this->path().$queue;
-	}
-
-	/**
-	 * Is the request AJAX or not
-	 * @return boolean
-	 */
-	public function ajax()
-	{
-		return (isset($this->server["HTTP_X_REQUESTED_WITH"]) AND (strtolower($this->server["HTTP_X_REQUESTED_WITH"]) === "xmlhttprequest"));
-	}
-
-	/**
-	 * Request from CLI
-	 * TODO: this should be somehow changeable
-	 * 
-	 * @return boolean
-	 */
-	public function cli()
-	{
-		return (PHP_SAPI === "cli");
-	}
-
-	/**
-	 * Client's IP
-	 * @return string
-	 */
-	public function ip()
-	{
-		if ($this->cli()) return "127.0.0.1"; // The request was started from the command line
-		if (isset($this->server["HTTP_X_FORWARDED_FOR"])) return $this->server["HTTP_X_FORWARDED_FOR"]; // If the server is behind proxy
-		if (isset($this->server["HTTP_CLIENT_IP"])) return $this->server["HTTP_CLIENT_IP"];
-		if (isset($this->server["REMOTE_ADDR"])) return $this->server["REMOTE_ADDR"];
-		return "0.0.0.0";
-	}
 
 }
