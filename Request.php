@@ -385,6 +385,26 @@ class Request
 	}
 
 	/**
+	 * Is the request AJAX or not
+	 * 
+	 * @return boolean
+	 */
+	public function isAjax()
+	{
+	 	return (isset($this->server["HTTP_X_REQUESTED_WITH"]) AND (strtolower($this->server["HTTP_X_REQUESTED_WITH"]) === "xmlhttprequest"));
+	}
+
+	/**
+	 * Request from CLI
+	 * 
+	 * @return boolean
+	 */
+	public function isCLI()
+	{
+	 	return (PHP_SAPI === "cli");
+	}
+
+	/**
 	 * Returns request scheme://host
 	 * @return string
 	 */
@@ -425,25 +445,6 @@ class Request
 	// 	return $this->base().$this->getPath().$queue;
 	// }
 
-	/**
-	 * Is the request AJAX or not
-	 * @return boolean
-	 */
-	// public function ajax()
-	// {
-	// 	return (isset($this->server["HTTP_X_REQUESTED_WITH"]) AND (strtolower($this->server["HTTP_X_REQUESTED_WITH"]) === "xmlhttprequest"));
-	// }
-
-	/**
-	 * Request from CLI
-	 * TODO: this should be somehow changeable
-	 * 
-	 * @return boolean
-	 */
-	// public function cli()
-	// {
-	// 	return (PHP_SAPI === "cli");
-	// }
 
 	/**
 	 * Client's IP
