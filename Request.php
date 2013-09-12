@@ -385,6 +385,16 @@ class Request
 	}
 
 	/**
+	 * Returns request scheme://host
+	 * 
+	 * @return string
+	 */
+	public function getBase()
+	{
+		return $this->getScheme() . "://" .  $this->getHost();
+	}
+
+	/**
 	 * Is the request AJAX or not
 	 * 
 	 * @return boolean
@@ -403,15 +413,6 @@ class Request
 	{
 	 	return (PHP_SAPI === "cli");
 	}
-
-	/**
-	 * Returns request scheme://host
-	 * @return string
-	 */
-	// public function base()
-	// {
-	// 	return $this->getScheme() . "://" .  $this->getHost();
-	// }
 
 	/**
 	 * Returns request (protocol+host+uri)
