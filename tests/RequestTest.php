@@ -27,8 +27,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		// port
 		$this->assertEquals(80, $req->server["SERVER_PORT"]);
 		$this->assertEquals(80, $req->getPort());
-		// base()
-		// $this->assertEquals("http://example.com", $req->base());
+		// getBbase()
+		$this->assertEquals("http://example.com", $req->getBase());
 		// PATH_INFO
 		$this->assertEquals("/path/to/file.php", $req->server["PATH_INFO"]);
 		// path()
@@ -50,9 +50,9 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		// address()
 		// $this->assertEquals("http://example.com/path/to/file.php?arg1=one&arg2=two", $req->address());
 		// ajax()
-		// $this->assertSame(false, $req->ajax());
-		// cli()
-		// $this->assertSame(true, $req->cli());
+		$this->assertSame(false, $req->isAjax());
+		// isCli()
+		$this->assertSame(true, $req->isCli());
 		// REMOTE_ADDR
 		// $this->assertEquals("127.0.0.1", $req->server["REMOTE_ADDR"]);
 		// ip()
