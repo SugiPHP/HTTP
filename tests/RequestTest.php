@@ -66,7 +66,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("GET", $req->server["REQUEST_METHOD"]);
 		// method()
 		$this->assertEquals("GET", $req->getMethod());
-		
+
 		// set method
 		$this->assertInstanceOf("\SugiPHP\HTTP\Request", $req->setMethod("POST"));
 		$this->assertEquals("POST", $req->server["REQUEST_METHOD"]);
@@ -207,7 +207,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		// QUERY_STRING
 		$this->assertEquals("arg1=edno&arg2=two&foo=bar", $req->server["QUERY_STRING"]);
 		// queue() arguments
-		// $this->assertEquals("arg1=edno&arg2=two&foo=bar", $req->queue());		
+		// $this->assertEquals("arg1=edno&arg2=two&foo=bar", $req->queue());
 		// REQUEST_URI
 		$this->assertEquals("/path/to/file.php?arg1=edno&arg2=two&foo=bar", $req->server["REQUEST_URI"]);
 		// address()
@@ -269,5 +269,41 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("cookievalue", $req->cookie["cookiename"]);
 		// cookie2
 		$this->assertEquals("bar", $req->cookie["foo"]);
+	}
+
+	public function testClientIp()
+	{
+		$req = Request::custom();
+		$this->assertSame("127.0.0.1", $req->getClientIp());
+	}
+
+	public function testClientIpFromCli()
+	{
+		$req = Request::real();
+		$this->assertSame("", $req->getClientIp());
+	}
+
+	public function testClientIpFromCliGetFromUntrustedProxy()
+	{
+		$_SERVER["HTTP_X_FORWARDED_FOR"] = "5.6.7.8";
+		$req = Request::real();
+		$this->assertSame("", $req->getClientIp());
+	}
+
+	public function testClientIpFromUntrustedProxy()
+	{
+		$_SERVER["REMOTE_ADDR"] = "1.2.3.4";
+		$_SERVER["HTTP_X_FORWARDED_FOR"] = "5.6.7.8";
+		$req = Request::real();
+		$this->assertSame("1.2.3.4", $req->getClientIp());
+	}
+
+	public function testClientIpFromTrustedProxy()
+	{
+		$_SERVER["REMOTE_ADDR"] = "1.2.3.4";
+		$_SERVER["HTTP_X_FORWARDED_FOR"] = "5.6.7.8";
+		$req = Request::real();
+		$req->setTrustedProxies(array("1.2.3.4"));
+		$this->assertSame("5.6.7.8", $req->getClientIp());
 	}
 }

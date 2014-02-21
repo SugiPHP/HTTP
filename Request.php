@@ -35,9 +35,16 @@ class Request
 	public $cookie;
 
 	/**
+	 * List of trusted proxies. You might want to add 127.0.0.1 & $_SERVER["SERVER_ADDR"] by default.
+	 *
+	 * @var array
+	 */
+	protected $trustedProxies = array();
+
+	/**
 	 * Constructor.
 	 * It's protected for now. Instantiate it with static methods real() and custom()
-	 * 
+	 *
 	 * @param array $server
 	 * @param array $query
 	 * @param array $post
@@ -53,7 +60,7 @@ class Request
 
 	/**
 	 * Creates Request instance with real HTTP request data.
-	 * 
+	 *
 	 * @return SugiPHP\HTTP\Request
 	 */
 	public static function real()
@@ -63,14 +70,14 @@ class Request
 
 	/**
 	 * Creates Request instance with user defined data. Used for unit testing.
-	 * 
+	 *
 	 * @param  string $uri
 	 * @param  string $method
 	 * @param  array  $params - custom parameters that will be injected in the request in POST, GET, etc. data
 	 * @param  array  $cookies
 	 * @return SugiPHP\HTTP\Request
 	 */
-	public static function custom($uri, $method = "GET", array $params = array(), array $cookies = array())
+	public static function custom($uri = "/", $method = "GET", array $params = array(), array $cookies = array())
 	{
 		$method = strtoupper($method);
 
@@ -81,7 +88,6 @@ class Request
 			"REMOTE_ADDR"           => "127.0.0.1",
 			"REQUEST_METHOD"        => $method,
 			"QUERY_STRING"          => "",
-			"REQUEST_URI"           => "/",
 			"PATH_INFO"             => "/",
 			//
 			// "REDIRECT_STATUS" => 200,
@@ -97,20 +103,20 @@ class Request
 			// "SERVER_ADDR" => "127.0.0.1",
 			// "SERVER_SIGNATURE" => "Apache/2.2.22",
 			// "SERVER_SOFTWARE" => "Apache/2.2.22",
-			// "DOCUMENT_ROOT" => "/path/to/http/doc/root", 
+			// "DOCUMENT_ROOT" => "/path/to/http/doc/root",
 			// "SERVER_ADMIN" => "[no address given]",
 			// "REMOTE_PORT" => 12345,
 			// "REDIRECT_QUERY_STRING" => http_build_query($params, "", "&"),
 			// "REDIRECT_URL" => "/path",
 			// "GATEWAY_INTERFACE" => "CGI/1.1",
 			// "SERVER_PROTOCOL" => "HTTP/1.1",
-			// "SCRIPT_NAME"           => "/index.php", 
+			// "SCRIPT_NAME"           => "/index.php",
 			// "SCRIPT_FILENAME" => "/path/to/http/doc/root/index.php",
 			// "PHP_SELF" => "/index.php/path",
 			// "REQUEST_TIME_FLOAT" => 1361878419.594,
 			// "REQUEST_TIME" => 1361878419
 		);
-	
+
 		// content
 		if ($method !== "GET") {
 			$server["CONTENT_TYPE"] = "application/x-www-form-urlencoded";
@@ -190,7 +196,7 @@ class Request
 
 	/**
 	 * Returns request method used.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getMethod()
@@ -213,7 +219,7 @@ class Request
 
 	/**
 	 * Returns scheme: "http" or "https".
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getScheme()
@@ -224,7 +230,7 @@ class Request
 	/**
 	 * Sets custom scheme - "http" or "https".
 	 * Additionally sets the port if not previously set to something non standard.
-	 * 
+	 *
 	 * @param  string $scheme
  	 * @return SugiPHP\HTTP\Request
 	 */
@@ -247,7 +253,7 @@ class Request
 
 	/**
 	 * Returns the server port on which the request is made.
-	 * 
+	 *
 	 * @return integer
 	 */
 	public function getPort()
@@ -257,7 +263,7 @@ class Request
 
 	/**
 	 * Sets custom server port on which the request is made.
-	 * 
+	 *
 	 * @param  integer $port
 	 * @return SugiPHP\HTTP\Request
 	 */
@@ -270,17 +276,17 @@ class Request
 
 	/**
 	 * Returns the basic authentication user name.
-	 * 
+	 *
 	 * @return string|null - Returns NULL if no user was specified in the request
 	 */
 	public function getUser()
 	{
 		return isset($this->server["PHP_AUTH_USER"]) ? $this->server["PHP_AUTH_USER"] : null;
-	}	
+	}
 
 	/**
 	 * Sets the basic authentication user name.
-	 * 
+	 *
 	 * @param  string|null $user - set to NULL for no user
 	 * @return SugiPHP\HTTP\Request
 	 */
@@ -293,7 +299,7 @@ class Request
 
 	/**
 	 * Returns the basic authentication password.
-	 * 
+	 *
 	 * @return string|null - Returns NULL if no password was specified in the request
 	 */
 	public function getPassword()
@@ -303,7 +309,7 @@ class Request
 
 	/**
 	 * Sets the basic authentication password.
-	 * 
+	 *
 	 * @param  string|null $password - set to NULL for no password
 	 * @return SugiPHP\HTTP\Request
 	 */
@@ -331,13 +337,13 @@ class Request
 
 	/**
 	 * Returns the path extracted from the request. The path has no trailing slash and always have leading one.
-	 * Examples: 
+	 * Examples:
 	 *  * /
 	 *  * /home
 	 *  * /index.php
 	 *  * /users/login
 	 *  * /users/login.php
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getPath()
@@ -347,7 +353,7 @@ class Request
 
 	/**
 	 * Sets request path.
-	 * 
+	 *
 	 * @param  string $path
 	 * @return SugiPHP\HTTP\Request
 	 */
@@ -363,7 +369,7 @@ class Request
 
 	/**
 	 * Returns host name like "subdomain.example.com".
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getHost()
@@ -386,7 +392,7 @@ class Request
 
 	/**
 	 * Returns request scheme://host
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getBase()
@@ -396,7 +402,7 @@ class Request
 
 	/**
 	 * Is the request AJAX or not
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function isAjax()
@@ -406,12 +412,46 @@ class Request
 
 	/**
 	 * Request from CLI
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function isCLI()
 	{
 	 	return (PHP_SAPI === "cli");
+	}
+
+	public function setTrustedProxies(array $proxies = array())
+	{
+		$this->trustedProxies = $proxies;
+	}
+
+	public function getTrustedProxies()
+	{
+		return $this->trustedProxies;
+	}
+
+	/**
+	 * Get the client's IP address
+	 *
+	 * @return string
+	 */
+	public function getClientIp()
+	{
+		// from CLI
+		if (!isset($this->server["REMOTE_ADDR"])) {
+			return "";
+		}
+
+		$ip = $this->server["REMOTE_ADDR"];
+		if (in_array($ip, $this->trustedProxies)) {
+			if (isset($this->server["HTTP_X_FORWARDED_FOR"])) {
+				$ip = $this->server["HTTP_X_FORWARDED_FOR"];
+			} elseif (isset($this->server["HTTP_CLIENT_IP"])) {
+				$ip = $this->server["HTTP_CLIENT_IP"];
+			}
+		}
+
+		return $ip;
 	}
 
 	/**
@@ -434,7 +474,7 @@ class Request
 
 	/**
 	 * Returns request scheme://host/uri?queue
-	 * 
+	 *
 	 * @return string
 	 * @todo: maybe shold place user/pass and port (if not default)
 	 */
@@ -448,30 +488,17 @@ class Request
 
 
 	/**
-	 * Client's IP
-	 * @return string
-	 */
-	// public function ip()
-	// {
-	// 	if ($this->cli()) return "127.0.0.1"; // The request was started from the command line
-	// 	if (isset($this->server["HTTP_X_FORWARDED_FOR"])) return $this->server["HTTP_X_FORWARDED_FOR"]; // If the server is behind proxy
-	// 	if (isset($this->server["HTTP_CLIENT_IP"])) return $this->server["HTTP_CLIENT_IP"];
-	// 	if (isset($this->server["REMOTE_ADDR"])) return $this->server["REMOTE_ADDR"];
-	// 	return "0.0.0.0";
-	// }
-
-	/**
 	 * Get the URI for the current request.
 	 * @return string
 	 */
 	protected function uri()
 	{
 		// determine URI from Request
-		$uri = isset($this->server["REQUEST_URI"]) ? $this->server["REQUEST_URI"] : 
-			(isset($this->server["PATH_INFO"]) ? $this->server["PATH_INFO"] : 
-				(isset($this->server["PHP_SELF"]) ? $this->server["PHP_SELF"] : 
+		$uri = isset($this->server["REQUEST_URI"]) ? $this->server["REQUEST_URI"] :
+			(isset($this->server["PATH_INFO"]) ? $this->server["PATH_INFO"] :
+				(isset($this->server["PHP_SELF"]) ? $this->server["PHP_SELF"] :
 					(isset($this->server["REDIRECT_URL"]) ? $this->server["REDIRECT_URL"] : "")));
-		
+
 		// remove unnecessarily slashes, like doubles and leading
 		$uri = preg_replace("|//+|", "/", $uri);
 		$uri = ltrim($uri, "/");
@@ -481,7 +508,7 @@ class Request
 			$uri = $e[0];
 		}
 		// $uri = trim($uri, '/');
-		// add / only on empty URI - not good, because this will not work: 
+		// add / only on empty URI - not good, because this will not work:
 		// 		Route::uri('(<controller>(/<action>(/<param>*)))', function ($params) {
 		// since we have no "/", this is OK, but it's more complicated:
 		//		Route::uri('(/)(<controller>(/<action>(/<param>*)))', function ($params) {
