@@ -2,8 +2,8 @@
     "name": "sugiphp/http",
     "type": "library",
     "description": "HTTP Request and Response classes",
-    "keywords": ["request", "response", "http"],
-    "licence": "MIT",
+    "keywords": ["request", "response", "HTTP"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Plamen Popov",
@@ -14,10 +14,9 @@
         "php": ">=5.3"
     },
     "autoload": {
-        "psr-0": { 
+        "psr-4": {
             "SugiPHP\\HTTP\\": ""
         }
     },
-    "target-dir": "SugiPHP/HTTP",
     "minimum-stability": "dev"
 }
