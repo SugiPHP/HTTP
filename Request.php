@@ -12,24 +12,28 @@ class Request
 {
 	/**
 	 * HTTP SERVER parameter container ($_SERVER).
+	 *
 	 * @var array
 	 */
 	public $server;
 
 	/**
 	 * HTTP GET parameters container ($_GET).
+	 *
 	 * @var array
 	 */
 	public $query;
 
 	/**
 	 * HTTP POST parameters container ($_POST).
+	 *
 	 * @var array
 	 */
 	public $post;
 
 	/**
 	 * Cookies container ($_COOKIE).
+	 *
 	 * @var array
 	 */
 	public $cookie;
@@ -224,7 +228,8 @@ class Request
 	 */
 	public function getScheme()
 	{
-		return (!empty($this->server["HTTPS"]) AND filter_var($this->server["HTTPS"], FILTER_VALIDATE_BOOLEAN)) ? "https" : "http";
+		return (!empty($this->server["HTTPS"]) && filter_var($this->server["HTTPS"], FILTER_VALIDATE_BOOLEAN))
+			? "https" : "http";
 	}
 
 	/**
@@ -238,12 +243,12 @@ class Request
 	{
 		if ($scheme === "https") {
 			$this->server["HTTPS"] = "on";
-			if (!isset($this->server["SERVER_PORT"]) or $this->server["SERVER_PORT"] == 80) {
+			if (!isset($this->server["SERVER_PORT"]) || ($this->server["SERVER_PORT"] == 80)) {
 				$this->server["SERVER_PORT"] = 443;
 			}
 		} else {
 			$this->server["HTTPS"] = "off";
-			if (!isset($this->server["SERVER_PORT"]) or $this->server["SERVER_PORT"] == 443) {
+			if (!isset($this->server["SERVER_PORT"]) || ($this->server["SERVER_PORT"] == 443)) {
 				$this->server["SERVER_PORT"] = 80;
 			}
 		}
@@ -407,7 +412,8 @@ class Request
 	 */
 	public function isAjax()
 	{
-	 	return (isset($this->server["HTTP_X_REQUESTED_WITH"]) AND (strtolower($this->server["HTTP_X_REQUESTED_WITH"]) === "xmlhttprequest"));
+	 	return (isset($this->server["HTTP_X_REQUESTED_WITH"])
+	 	        && (strtolower($this->server["HTTP_X_REQUESTED_WITH"]) === "xmlhttprequest"));
 	}
 
 	/**
@@ -517,6 +523,4 @@ class Request
 
 		return $uri;
 	}
-
-
 }
