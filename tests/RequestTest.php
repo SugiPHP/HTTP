@@ -1,10 +1,10 @@
 <?php
 /**
- * @package    SugiPHP
- * @subpackage HTTP
- * @category   tests
- * @author     Plamen Popov <tzappa@gmail.com>
- * @license    http://opensource.org/licenses/mit-license.php (MIT License)
+ * PHP Unit tests for SugiPHP Request Class
+ *
+ * @package SugiPHP.HTTP
+ * @author  Plamen Popov <tzappa@gmail.com>
+ * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
 namespace SugiPHP\HTTP;

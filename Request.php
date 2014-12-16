@@ -1,9 +1,10 @@
 <?php
 /**
- * @package    SugiPHP
- * @subpackage HTTP
- * @author     Plamen Popov <tzappa@gmail.com>
- * @license    http://opensource.org/licenses/mit-license.php (MIT License)
+ * Request Class
+ *
+ * @package SugiPHP.HTTP
+ * @author  Plamen Popov <tzappa@gmail.com>
+ * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
 namespace SugiPHP\HTTP;
@@ -75,10 +76,11 @@ class Request
 	/**
 	 * Creates Request instance with user defined data. Used for unit testing.
 	 *
-	 * @param  string $uri
-	 * @param  string $method
-	 * @param  array  $params - custom parameters that will be injected in the request in POST, GET, etc. data
-	 * @param  array  $cookies
+	 * @param string $uri
+	 * @param string $method
+	 * @param array  $params - custom parameters that will be injected in the request in POST, GET, etc. data
+	 * @param array  $cookies
+	 *
 	 * @return SugiPHP\HTTP\Request
 	 */
 	public static function custom($uri = "/", $method = "GET", array $params = array(), array $cookies = array())
@@ -93,32 +95,6 @@ class Request
 			"REQUEST_METHOD"        => $method,
 			"QUERY_STRING"          => "",
 			"PATH_INFO"             => "/",
-			//
-			// "REDIRECT_STATUS" => 200,
-			// "HTTP_ACCEPT"           => "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-			// "HTTP_ACCEPT_LANGUAGE"  => "en-us,en;q=0.5",
-			// "HTTP_ACCEPT_CHARSET"   => "utf-8;q=1.0",
-			// "HTTP_ACCEPT_ENCODING" => "gzip, deflate"
-			// "HTTP_DNT" => 1, // Do Not Track
-			// "HTTP_CONNECTION" => "keep-alive",
-			// "HTTP_CACHE_CONTROL" => "max-age=0",
-			// "PATH" => "/usr/local/bin:/usr/bin:/bin",
-			// "SERVER_NAME"           => "localhost",
-			// "SERVER_ADDR" => "127.0.0.1",
-			// "SERVER_SIGNATURE" => "Apache/2.2.22",
-			// "SERVER_SOFTWARE" => "Apache/2.2.22",
-			// "DOCUMENT_ROOT" => "/path/to/http/doc/root",
-			// "SERVER_ADMIN" => "[no address given]",
-			// "REMOTE_PORT" => 12345,
-			// "REDIRECT_QUERY_STRING" => http_build_query($params, "", "&"),
-			// "REDIRECT_URL" => "/path",
-			// "GATEWAY_INTERFACE" => "CGI/1.1",
-			// "SERVER_PROTOCOL" => "HTTP/1.1",
-			// "SCRIPT_NAME"           => "/index.php",
-			// "SCRIPT_FILENAME" => "/path/to/http/doc/root/index.php",
-			// "PHP_SELF" => "/index.php/path",
-			// "REQUEST_TIME_FLOAT" => 1361878419.594,
-			// "REQUEST_TIME" => 1361878419
 		);
 
 		// content
@@ -211,7 +187,8 @@ class Request
 	/**
 	 * Sets custom request method.
 	 *
-	 * @param  string $method - GET, POST, etc.
+	 * @param string $method - GET, POST, etc.
+	 *
 	 * @return SugiPHP\HTTP\Request
 	 */
 	public function setMethod($method)
@@ -236,8 +213,9 @@ class Request
 	 * Sets custom scheme - "http" or "https".
 	 * Additionally sets the port if not previously set to something non standard.
 	 *
-	 * @param  string $scheme
- 	 * @return SugiPHP\HTTP\Request
+	 * @param string $scheme
+	 *
+	 * @return SugiPHP\HTTP\Request
 	 */
 	public function setScheme($scheme)
 	{
@@ -259,7 +237,7 @@ class Request
 	/**
 	 * Returns the server port on which the request is made.
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getPort()
 	{
@@ -269,7 +247,8 @@ class Request
 	/**
 	 * Sets custom server port on which the request is made.
 	 *
-	 * @param  integer $port
+	 * @param int $port
+	 *
 	 * @return SugiPHP\HTTP\Request
 	 */
 	public function setPort($port)
@@ -292,7 +271,8 @@ class Request
 	/**
 	 * Sets the basic authentication user name.
 	 *
-	 * @param  string|null $user - set to NULL for no user
+	 * @param string|null $user - set to NULL for no user
+	 *
 	 * @return SugiPHP\HTTP\Request
 	 */
 	public function setUser($user)
@@ -315,7 +295,8 @@ class Request
 	/**
 	 * Sets the basic authentication password.
 	 *
-	 * @param  string|null $password - set to NULL for no password
+	 * @param string|null $password - set to NULL for no password
+	 *
 	 * @return SugiPHP\HTTP\Request
 	 */
 	public function setPassword($password)
@@ -328,8 +309,9 @@ class Request
 	/**
 	 * Sets auth user password.
 	 *
-	 * @param  string|null $user - set to NULL for no password
-	 * @param  string|null $password - set to NULL for no password
+	 * @param string|null $user - set to NULL for no password
+	 * @param string|null $password - set to NULL for no password
+	 *
 	 * @return SugiPHP\HTTP\Request
 	 */
 	public function setUserPass($user, $password)
@@ -359,7 +341,8 @@ class Request
 	/**
 	 * Sets request path.
 	 *
-	 * @param  string $path
+	 * @param string $path
+	 *
 	 * @return SugiPHP\HTTP\Request
 	 */
 	public function setPath($path)
@@ -385,7 +368,8 @@ class Request
 	/**
 	 * Sets the host
 	 *
-	 * @param  string $host
+	 * @param string $host
+	 *
 	 * @return SugiPHP\HTTP\Request
 	 */
 	public function setHost($host)
@@ -412,8 +396,7 @@ class Request
 	 */
 	public function isAjax()
 	{
-	 	return (isset($this->server["HTTP_X_REQUESTED_WITH"])
-	 	        && (strtolower($this->server["HTTP_X_REQUESTED_WITH"]) === "xmlhttprequest"));
+	 	return (isset($this->server["HTTP_X_REQUESTED_WITH"]) && (strtolower($this->server["HTTP_X_REQUESTED_WITH"]) === "xmlhttprequest"));
 	}
 
 	/**
@@ -426,11 +409,25 @@ class Request
 	 	return (PHP_SAPI === "cli");
 	}
 
+	/**
+	 * A trusted proxy is a trusted server(s) IP address(es)
+	 * If $_SERVER["REMOTE_ADDRESS"] is on one of those IP addresses then
+	 * a $_SERVER["HTTP_X_FORWARDED_FOR"] or $_SERVER["HTTP_CLIENT_IP"] is examined.
+	 *
+	 * @param array $proxies
+	 *
+	 * @return void
+	 */
 	public function setTrustedProxies(array $proxies = array())
 	{
 		$this->trustedProxies = $proxies;
 	}
 
+	/**
+	 * Returns previously set trusted proxies.
+	 *
+	 * @return array
+	 */
 	public function getTrustedProxies()
 	{
 		return $this->trustedProxies;
@@ -461,39 +458,6 @@ class Request
 	}
 
 	/**
-	 * Returns request (protocol+host+uri)
-	 * @return string
-	 */
-	// public function current()
-	// {
-	// 	return $this->base() . $this->getPath();
-	// }
-
-	/**
-	 * The part of the url which is after the ?
-	 * @return string
-	 */
-	// public function queue()
-	// {
-	// 	return http_build_query($this->query, "", "&");
-	// }
-
-	/**
-	 * Returns request scheme://host/uri?queue
-	 *
-	 * @return string
-	 * @todo: maybe shold place user/pass and port (if not default)
-	 */
-	// public function address()
-	// {
-	// 	if ($queue = $this->queue()) {
-	// 		$queue = "?" . $queue;
-	// 	}
-	// 	return $this->base().$this->getPath().$queue;
-	// }
-
-
-	/**
 	 * Get the URI for the current request.
 	 * @return string
 	 */
@@ -510,8 +474,8 @@ class Request
 		$uri = ltrim($uri, "/");
 		// remove get params
 		if (strpos($uri, "?") !== false) {
-			$e = explode("?", $uri, 2);
-			$uri = $e[0];
+			$uriArr = explode("?", $uri, 2);
+			$uri = $uriArr[0];
 		}
 		// $uri = trim($uri, '/');
 		// add / only on empty URI - not good, because this will not work:
